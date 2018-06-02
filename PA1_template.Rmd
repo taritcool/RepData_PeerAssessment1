@@ -39,7 +39,12 @@ median(daily_steps)
 interval_steps<-tapply(data[,1],data[,3],mean,na.rm=T)
 plot(interval_steps,type="l",xlab="5-minute Interval",ylab="Average Steps")
 ```
-### 
+
+### 5-miute interval which on average contain maximum number of steps
+
+```{r}
+as.numeric(names(which.max(interval_steps)))
+```
 
 
 ## 4. Imputing missing values
