@@ -9,7 +9,7 @@ output:
 
 ## 1. Loading and preprocessing the data
 ```{r echo=TRUE}
-data<-read.csv("C:/Users/MAHE/Desktop/Career/Coursera/REproducible Research/RepData_PeerAssessment1/RepData_PeerAssessment1-master/activity/activity.csv")
+data<-read.csv("C:/Users/MAHE/Desktop/Career/RepData_PeerAssessment1/activity/activity.csv")
 data$date <- as.Date(data$date, format = "%Y-%m-%d")
 ```
 
@@ -57,6 +57,7 @@ imputed_data<-data %>% group_by(interval) %>% mutate(steps=ifelse(is.na(steps),m
 imputed_data<-data.frame(imputed_data)
 ```
 ### Histogram, Mean and Median of Imputed Datasets
+
 ```{r}
 imputed_daily_steps<-tapply(imputed_data[,1],imputed_data[,2],sum)
 qplot(imputed_daily_steps,binwidth=2000,xlab="Total Steps Taken Per Day")
@@ -66,7 +67,19 @@ median(imputed_daily_steps)
 ```
 
 ## 5. Are there differences in activity patterns between weekdays and weekends?
+
+### Creating a factor Variable with two level 'Weekdays' and 'Weekends'
+
+```{r}
+ days<-ifelse(weekdays(imputed_data$date) %in% c("Saturday", "Sunday"), "weekend", "weekday")
+ days<-as.factor(days)
+ imputed_data<-cbind(imputed_data,days)
+    ```
  
- ```{r}
+###  A panel plot containing a time series plot of the 5-minute interval and the average number of steps taken, averaged across all weekday days or weekend day
  
- ```
+```{r}
+x<-imputed_data %>% group_by(days,interval) %>% summarise(steps=sum(steps))
+x<-data.frame(x)
+qplot(interval,steps,data=x,geom="line",facets = days~.)
+```
